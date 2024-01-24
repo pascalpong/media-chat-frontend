@@ -3,15 +3,19 @@ import "./style.css";
 import ChatList from "../ChatList";
 import ChatContent from "../ChatContent";
 import UserProfile from "../Profile";
+import { Container, Grid } from "@mui/material";
 
 const ChatBody = (params:any) => {
 
   return (
-    <div className="main__chatbody">
-      <ChatList />
-      <ChatContent />
-      <UserProfile />
-    </div>
+    <Grid container spacing={2}>
+      <Grid item xs={8}>
+        <ChatContent />
+      </Grid>
+      <Grid item xs={4}>
+        <UserProfile />
+      </Grid>
+    </Grid>
   );
 }
 

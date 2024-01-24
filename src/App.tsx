@@ -1,18 +1,23 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import Nav from './components/nav';
-import ChatBody from './components/ChatBody';
+import { Provider } from 'react-redux';
 import { Container } from '@mui/material';
+import { useRoutes } from 'react-router-dom';
+import store from './store';
+import router from './router';
+import Nav from './components/nav';
 
 function App() {
+  const content = useRoutes(router);
+
   return (
-    <Container>
-      <div className="App">
-        <Nav />
-        <ChatBody />
-      </div>
-    </Container>
+    <Provider store={store}>
+      <Container>
+        <div className="App">
+          <Nav />
+          {content}
+        </div>
+      </Container>
+    </Provider>
   );
 }
 

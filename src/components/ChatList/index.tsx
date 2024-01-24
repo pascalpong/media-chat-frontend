@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import "./style.css";
 import ChatListItems from "./item";
 
-export default class ChatList extends Component {
-  allChatUsers = [
+const ChatList = (props:any) => {
+  const allChatUsers = [
     {
       image:
         "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU",
@@ -83,14 +83,8 @@ export default class ChatList extends Component {
       active: false,
       isOnline: true
     }
-  ];
-  constructor(props:any) {
-    super(props);
-    this.state = {
-      allChats: this.allChatUsers
-    };
-  }
-  render() {
+  ]; 
+  
     return (
       <div className="main__chatlist">
         <div className="chatlist__heading">
@@ -108,5 +102,6 @@ export default class ChatList extends Component {
         </div>
       </div>
     );
-  }
 }
+
+export default ChatList

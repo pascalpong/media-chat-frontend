@@ -1,157 +1,56 @@
-import React, { Component, useState, createRef, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import "./style.css";
-import Avatar from "../ChatList/Avatar";
 import ChatItem from "./item";
 import ChatList from "../ChatList";
+import { useGetChatMessagesQuery } from "../../services/chatRoomService";
+import { Box } from "@mui/material";
+import SendMessageTab from "./SendMessageTab";
+import ChatHeader from "./ChatHeader";
 
-const ChatContent = (props: any) => {
+
+const ChatContent = (props: any):JSX.Element => {
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const chatItms = [
-    {
-      key: 1,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU",
-      type: "",
-      msg: "Hi Tim, How are you?"
-    },
-    {
-      key: 2,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU",
-      type: "other",
-      msg: "I am fine."
-    },
-    {
-      key: 3,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU",
-      type: "other",
-      msg: "What about you?"
-    },
-    {
-      key: 4,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU",
-      type: "",
-      msg: "Awesome these days."
-    },
-    {
-      key: 5,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU",
-      type: "other",
-      msg: "Finally. What's the plan?"
-    },
-    {
-      key: 6,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU",
-      type: "",
-      msg: "what plan mate?"
-    },
-    {
-      key: 7,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU",
-      type: "other",
-      msg: "I'm taliking about the tutorial"
-    }
-  ];
+  const { data: chatMessages, isLoading, error } = useGetChatMessagesQuery("65af5e399d2cdf02ccaf6add");
+  // const messages =
 
-  const [chatItems, setChatItems] = useState({
-    chat: chatItms,
-    msg: ""
-  });
+  const [allMessages, setAllMessages] = useState([])
+
 
   useEffect(() => {
-    const scrollToBottom = () => {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    };
-
-    const handleKeyPress = (e: KeyboardEvent) => {
-      if (e.key === "Enter") {
-        if (chatItems.msg !== "") {
-          const newChatItems = [...chatItems.chat];
-          newChatItems.push({
-            key: chatItems.chat.length + 1,
-            type: "",
-            msg: chatItems.msg,
-            image:
-              "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU"
-          });
-      
-          setChatItems({ chat: newChatItems, msg: "" });
-          scrollToBottom();
+    if(chatMessages) {
+      chatMessages.map((message: any, key: number) => {
+        return {
+          key,
+          type: "other" && "",
+          msg: message.message
         }
-      }
-    };
+      })
+      setAllMessages(chatMessages)
+    }
 
-    window.addEventListener("keydown", handleKeyPress);
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyPress);
-    };
-  }, [chatItems]);
-
-  const onStateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setChatItems({ ...chatItems, msg: e.target.value });
-  };
-
+  },[chatMessages])
 
     return (
       <div className="main__chatcontent">
-        <div className="content__header">
-          <div className="blocks">
-            <div className="current-chatting-user">
-              <Avatar
-                isOnline="active"
-                image="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU"
-              />
-              <p>Tim Hover</p>
-            </div>
-          </div>
-
-          <div className="blocks">
-            <div className="settings">
-              <button className="btn-nobg">
-                <i className="fa fa-cog"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-        <div className="content__body">
-          <div className="chat__items">
-            {chatItems.chat.map((itm, index) => {
+        <ChatHeader/>
+        <Box>
+          <div className="chat__items content__body">
+            {allMessages.map((itm:any, index) => {
               return (
                 <ChatItem
                   animationDelay={index + 2}
-                  key={itm.key}
+                  key={index}
                   user={itm.type ? itm.type : "me"}
-                  msg={itm.msg}
+                  msg={itm.message}
                   image={itm.image}
                 />
               );
-            })}
-            <div ref={messagesEndRef} />
+            })} 
           </div>
-        </div>
-        <div className="content__footer">
-          <div className="sendNewMessage">
-            <button className="addFiles">
-              <i className="fa fa-plus"></i>
-            </button>
-            <input
-              type="text"
-              placeholder="Type a message here"
-              onChange={onStateChange}
-              value={chatItems.msg}
-            />
-            <button className="btnSendMsg" id="sendMsgBtn">
-              <i className="fa fa-paper-plane"></i>
-            </button>
-          </div>
-        </div>
+          <SendMessageTab />
+        </Box>
       </div>
     );
 }

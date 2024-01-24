@@ -1,4 +1,5 @@
 .main__chatbody {
+    height: 100%;
     flex-grow: 1;
     background-color: #f4f3f8;
     border-radius: 10px;
