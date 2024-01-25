@@ -47,7 +47,7 @@ const ChatContent = (props: any):JSX.Element => {
                   image={itm.image}
                 />
               );
-            })} 
+            })}
           </div>
           <SendMessageTab />
         </Box>

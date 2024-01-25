@@ -16,6 +16,7 @@ const Loader = <P extends {}>(
 
 const ChatBody = Loader(lazy(() => import("../components/ChatBody")));
 const Login = Loader(lazy(() =>  import("../components/Login")))
+const Register = Loader(lazy(() => import("../pages/Register")))
 
 const routes = [
   {
@@ -25,6 +26,10 @@ const routes = [
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/register",
+    element: <Register />,
   },
 ];
 

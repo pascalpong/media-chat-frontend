@@ -1,5 +1,6 @@
-import { Box, Button, Card, CardContent, CardMedia, Container, FormControl, IconButton, TextField, Typography, useTheme } from "@mui/material";
+import { Box, Button, Card, CardContent, CardMedia, Container, FormControl, IconButton, Stack, TextField, Typography, useTheme } from "@mui/material";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 const Login = ():JSX.Element => {
 
@@ -8,32 +9,42 @@ const Login = ():JSX.Element => {
         password: ""
     })
 
-    const username = (e: React.ChangeEvent<HTMLInputElement>) => {
-        toLogIn.username = 'column';
-        setToLogIn(toLogIn)
-    }
+    const { register, handleSubmit } = useForm({
+        defaultValues: {
+          username: "",
+          password: "",
+        },
+    })
 
     return (
         <Container>
             <FormControl>
                 <Card sx={{ display: 'flex' }}>
                     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                        <Box sx={{ display: 'flex', alignItems: 'center', pl: 2, pb: 2 }}>
-                            <TextField
-                                required
-                                id="outlined-required"
-                                onChange={username}
-                                label="Required"
-                                defaultValue="Hello World"
-                            />
-                            <TextField
-                                required
-                                id="outlined-required"
-                                onChange={username}
-                                label="Required"
-                                defaultValue="Hello World"
-                            />
-                            <Button variant="outlined">Outlined</Button>
+                        <Box sx={{ display: 'flex', alignItems: 'center', p: 2 }}>
+                            <Stack spacing={{ xs: 1, sm: 2 }} direction="row" useFlexGap flexWrap="wrap">
+                                <TextField
+                                    fullWidth
+                                    required
+                                    id="outlined-required"
+                                    label="Required"
+                                    defaultValue=""
+                                    
+                                />
+                                <TextField
+                                    fullWidth
+                                    required
+                                    id="outlined-required"
+                                    label="Required"
+                                    defaultValue=""
+                                />
+                                <Button 
+                                    fullWidth
+                                    variant="outlined"
+                                >
+                                    Outlined
+                                </Button>
+                            </Stack>
                         </Box>
                     </Box>
                 </Card>

@@ -10,9 +10,19 @@ export const UserService = createApi({
     getUsers: builder.query<any, string>({
       query: (name) => `/user`,
     }),
+    createUser: builder.mutation<any, any>({
+      query: (body) => ({
+        url: `/user`,
+        method: `POST`,
+        body
+      })
+    })
   }),
 })
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useGetUsersQuery } = UserService
+export const { 
+  useGetUsersQuery,
+  useCreateUserMutation 
+} = UserService
