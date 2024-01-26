@@ -12,7 +12,10 @@ const ChatBody = (params:any) => {
       direction="column" 
       height="100vh"
     >
-      <Grid item>
+      <Grid 
+        item
+        xs={12}
+      >
         <Box 
           position={"fixed"} 
           top={0} 
@@ -22,19 +25,28 @@ const ChatBody = (params:any) => {
           <ChatHeader />
         </Box>
       </Grid>
-      <Grid item xs flexGrow={1}>
+      <Grid 
+        item
+        xs={12}
+        flexGrow={1}
+      >
         <Box
-          height={"90vh"}
-          overflow={"auto"} 
         >
-          <ChatContent 
-            sx={{ 
-              height: "100%" 
-            }} 
-          />
+          <Box
+            overflow={"auto"} 
+          >
+            <ChatContent 
+              sx={{ 
+                height: "100%" 
+              }} 
+            />
+          </Box>
         </Box>
       </Grid>
-      <Grid item>
+      <Grid  
+        item
+        xs={12}
+      >
         <Box 
           position={"fixed"} 
           bottom={0} 

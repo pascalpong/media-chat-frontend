@@ -1,7 +1,15 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import Avatar from "../ChatList/Avatar";
+import { socket } from "../../../socket";
 
 const ChatItem = (props:any) => {
+
+  const [test, setTest] = useState('------')
+
+  socket.on(`65b20bdeca1e0619453d9ab0-played`, async (data) => {
+    console.log(data)
+    return setTest(JSON.stringify(data))
+  });
 
   return (
     <div
@@ -11,7 +19,7 @@ const ChatItem = (props:any) => {
       <div className="chat__item__content">
         <div className="chat__msg">{props.msg}</div>
         <div className="chat__meta">
-          <span>16 mins ago</span>
+          <span>{test}</span>
           <span>Seen 1.03PM</span>
         </div>
       </div>
