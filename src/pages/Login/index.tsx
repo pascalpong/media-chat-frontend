@@ -1,14 +1,11 @@
-import { Box, Button, Card, CardContent, CardMedia, Container, FormControl, IconButton, Stack, TextField, Typography, useTheme } from "@mui/material";
-import { useState } from "react";
+import { Box, Button, Card, Container, FormControl, Stack, TextField } from "@mui/material";
 import { useForm } from "react-hook-form";
+import { useLoginMutation } from "../../services/authenticationService";
+import { useNavigate } from "react-router-dom";
 
 const Login = ():JSX.Element => {
 
-    const [toLogIn, setToLogIn] = useState({
-        username: "",
-        password: ""
-    })
-
+    const navigate = useNavigate();
     const { register, handleSubmit } = useForm({
         defaultValues: {
           username: "",
@@ -16,9 +13,17 @@ const Login = ():JSX.Element => {
         },
     })
 
+    const [login] = useLoginMutation();
+
+    const onSubmit = async (values: {username: string, password: string}) => {
+        const response = await login(values).unwrap();
+        localStorage.setItem('user', JSON.stringify({ ...response }));
+        navigate('/chat')
+    }
+
     return (
         <Container>
-            <FormControl>
+            <FormControl component={"form"}>
                 <Card sx={{ display: 'flex' }}>
                     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', p: 2 }}>
@@ -26,21 +31,19 @@ const Login = ():JSX.Element => {
                                 <TextField
                                     fullWidth
                                     required
-                                    id="outlined-required"
-                                    label="Required"
-                                    defaultValue=""
-                                    
+                                    label="username"
+                                    {...register('username')}
                                 />
                                 <TextField
                                     fullWidth
                                     required
-                                    id="outlined-required"
-                                    label="Required"
-                                    defaultValue=""
+                                    label="password"
+                                    {...register('password')}
                                 />
                                 <Button 
                                     fullWidth
                                     variant="outlined"
+                                    onClick={handleSubmit(onSubmit)}
                                 >
                                     Outlined
                                 </Button>

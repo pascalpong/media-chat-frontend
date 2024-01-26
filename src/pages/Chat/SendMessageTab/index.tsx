@@ -1,7 +1,7 @@
 import { Box, Button, FormControl, Grid, TextField } from "@mui/material"
 import SendIcon from '@mui/icons-material/Send';
 import { useState } from "react";
-import { useSendMessageMutation } from "../../services/messageService";
+import { useSendMessageMutation } from "../../../services/messageService";
 
 
 const SendMessageTab = ():JSX.Element => {
@@ -36,27 +36,27 @@ const SendMessageTab = ():JSX.Element => {
     
     return (
         <Box sx={{ width: '100%' }}>
-            <FormControl fullWidth>
-                <Grid container spacing={2}>
-                    <Grid item xs={10}>
-                        <TextField
-                        size="small"
-                        type="text"
-                        placeholder="Type a message here"
-                        fullWidth
-                        onChange={onStateChange}
-                        value={chatItems.msg}
-                        variant="outlined"
-                        color="primary"
-                        />
-                    </Grid>
-                    <Grid item xs={2}>
-                        <Button onClick={sendMessage}>
-                            <SendIcon />
-                        </Button>
-                    </Grid>
-                </Grid>
-            </FormControl>
+          <FormControl fullWidth>
+            <Grid container spacing={2}>
+              <Grid item xs={10}>
+                <TextField
+                  size="small"
+                  type="text"
+                  placeholder="Type a message here"
+                  fullWidth
+                  onChange={onStateChange}
+                  value={chatItems.msg}
+                  variant="outlined"
+                  color="primary"
+                />
+              </Grid>
+              <Grid item xs={2}>
+                <Button onClick={sendMessage}>
+                  <SendIcon />
+                </Button>
+              </Grid>
+            </Grid>
+          </FormControl>
         </Box>
     )
 }

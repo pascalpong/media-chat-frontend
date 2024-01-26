@@ -3,10 +3,8 @@ import React, { useState, useEffect, useRef } from "react";
 import "./style.css";
 import ChatItem from "./item";
 import ChatList from "../ChatList";
-import { useGetChatMessagesQuery } from "../../services/chatRoomService";
-import { Box } from "@mui/material";
-import SendMessageTab from "./SendMessageTab";
-import ChatHeader from "./ChatHeader";
+import { useGetChatMessagesQuery } from "../../../services/chatRoomService";
+import { Box, Stack } from "@mui/material";
 
 
 const ChatContent = (props: any):JSX.Element => {
@@ -33,10 +31,9 @@ const ChatContent = (props: any):JSX.Element => {
   },[chatMessages])
 
     return (
-      <div className="main__chatcontent">
-        <ChatHeader/>
-        <Box>
-          <div className="chat__items content__body">
+      <>
+        <Stack>
+          <Box>
             {allMessages.map((itm:any, index) => {
               return (
                 <ChatItem
@@ -48,10 +45,9 @@ const ChatContent = (props: any):JSX.Element => {
                 />
               );
             })}
-          </div>
-          <SendMessageTab />
-        </Box>
-      </div>
+          </Box>
+        </Stack>
+      </>
     );
 }
 

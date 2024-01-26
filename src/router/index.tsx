@@ -14,23 +14,40 @@ const Loader = <P extends {}>(
   return LoaderComponent;
 };
 
-const ChatBody = Loader(lazy(() => import("../components/ChatBody")));
-const Login = Loader(lazy(() =>  import("../components/Login")))
+const ChatBody = Loader(lazy(() => import("../pages/Chat/ChatBody")));
+const Login = Loader(lazy(() =>  import("../pages/Login")))
 const Register = Loader(lazy(() => import("../pages/Register")))
+const BaseLayout = Loader(lazy(() => import("../components/BaseLayout")))
+
+const PrivateRoute = ({
+  element: Element
+}: {
+  element: React.ComponentType;
+}) => {
+  const user = localStorage.getItem('user') ?? "";
+  const isLoggedIn = Boolean(JSON.parse(user));
+  return isLoggedIn ? <Element /> : <Login />;
+};
 
 const routes = [
   {
     path: "",
-    element: <ChatBody />,
+    element: <BaseLayout />,
+    children: [
+      {
+        path: "/",
+        element: <Login />,
+      },
+      {
+        path: "/register",
+        element: <Register />,
+      },
+    ]
   },
   {
-    path: "/login",
-    element: <Login />,
-  },
-  {
-    path: "/register",
-    element: <Register />,
-  },
+    path: "chat",
+    element: <PrivateRoute element={ChatBody}/>
+  }
 ];
 
 export default routes;
