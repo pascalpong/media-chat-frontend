@@ -1,23 +1,11 @@
 import React, { Component, useEffect, useState } from "react";
 import Avatar from "../ChatList/Avatar";
-// import { socket } from "../../../socket";
-import io from "socket.io-client";
-
-
-const socket = io(`${process.env.REACT_APP_MEDIA_CHAT_URL}`);
+import { socket } from "../../../socket";
 
 const ChatItem = (props:any) => {
 
   const [test, setTest] = useState('------')
 
-  useEffect(() => {
-
-    socket.on(`65b20bdeca1e0619453d9ab0-played`, async (data:any) => {
-      console.log(data)
-      setTest(JSON.stringify(data))
-    });
-
-  },[socket])
 
   return (
     <div
