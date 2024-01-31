@@ -1,4 +1,5 @@
 import { ComponentType, Suspense, lazy } from "react";
+import ChatList from "../pages/ChatList";
 
 interface LoaderProps {}
 
@@ -46,8 +47,24 @@ const routes = [
   },
   {
     path: "chat",
-    element: <PrivateRoute element={ChatBody}/>
-  }
+    element: <BaseLayout />,
+    children: [
+      {
+        path: ":roomId",
+        element: <PrivateRoute element={ChatBody}/>
+      }
+    ]
+  },
+  {
+    path: 'list',
+    element: <BaseLayout />,
+    children: [
+      {
+        path: '',
+        element: <ChatList />
+      },
+    ]
+  },
 ];
 
 export default routes;

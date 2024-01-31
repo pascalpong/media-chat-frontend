@@ -2,19 +2,17 @@ import React, { useState, useEffect, useRef } from "react";
 
 import "./style.css";
 import ChatItem from "./item";
-import ChatList from "../ChatList";
 import { useGetChatMessagesQuery } from "../../../services/chatRoomService";
 import { Box, Stack } from "@mui/material";
+import { useParams } from "react-router-dom";
+import { useForm } from "react-hook-form";
 
 
-const ChatContent = (props: any):JSX.Element => {
+const ChatContent = ():JSX.Element => {
 
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { data: chatMessages, isLoading, error } = useGetChatMessagesQuery("65af5e399d2cdf02ccaf6add");
-  // const messages =
-
+  const { roomId } = useParams();
+  const { data: chatMessages, isLoading, error } = useGetChatMessagesQuery(`${roomId}`);
   const [allMessages, setAllMessages] = useState([])
-
 
   useEffect(() => {
     if(chatMessages) {

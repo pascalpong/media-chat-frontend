@@ -1,42 +1,41 @@
 import { Box, Button, FormControl, Grid, TextField } from "@mui/material"
 import SendIcon from '@mui/icons-material/Send';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSendMessageMutation } from "../../../services/messageService";
+import { socket } from "../../../socket";
+import { useParams } from "react-router-dom";
+import { useForm } from "react-hook-form";
 
 
 const SendMessageTab = ():JSX.Element => {
+  const { roomId } = useParams();
+  const { _id: userId, name, socialMedia } = JSON.parse(`${localStorage.getItem('user')}`);
+  const { register, handleSubmit } = useForm({
+    defaultValues: {
+      message: ""
+    }
+  });
+  const [ message, setMessage ] = useState('')
 
-    let chatItms: any[] = []
-    const [chatItems, setChatItems] = useState({
-      chat: chatItms,
-      msg: ""
+  console.log(userId,'userIduserId',roomId,'roomIdroomId')
+
+  useEffect(() => {
+    socket.emit('message', { roomId, message} );
+    socket.on('get-message', (data) => {
+      console.log(data)
     });
 
-    const [submitMessage] = useSendMessageMutation()
+  },[message]);
 
-    const onStateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setChatItems({ ...chatItems, msg: e.target.value });
-      };
-    
-      const sendMessage = async (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        const messageValue = chatItems.msg;
-        const result = await submitMessage({
-          roomId: "65af5e399d2cdf02ccaf6add",
-          body: {
-            userId: "65ae189006b5af2c2afe5079",
-            message: messageValue
-          }
-        }).unwrap();
-    
-        console.log(result)
-        
-        setChatItems({ chat: [...chatItems.chat], msg: "" });
-      }
+  const onSubmit = async (values: {message: string}) => {
+    setMessage(message)
+  }
+
+  
     
     return (
         <Box sx={{ width: '100%' }}>
-          <FormControl fullWidth>
+          <FormControl component={'form'} fullWidth>
             <Grid container spacing={2}>
               <Grid item xs={10}>
                 <TextField
@@ -44,14 +43,13 @@ const SendMessageTab = ():JSX.Element => {
                   type="text"
                   placeholder="Type a message here"
                   fullWidth
-                  onChange={onStateChange}
-                  value={chatItems.msg}
                   variant="outlined"
                   color="primary"
+                  {...register('message')}
                 />
               </Grid>
               <Grid item xs={2}>
-                <Button onClick={sendMessage}>
+                <Button onClick={handleSubmit(onSubmit)}>
                   <SendIcon />
                 </Button>
               </Grid>

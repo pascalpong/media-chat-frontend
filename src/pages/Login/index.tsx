@@ -2,10 +2,11 @@ import { Box, Button, Card, Container, FormControl, Stack, TextField } from "@mu
 import { useForm } from "react-hook-form";
 import { useLoginMutation } from "../../services/authenticationService";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const Login = ():JSX.Element => {
-
     const navigate = useNavigate();
+    // const { _id: storedUserId } = JSON.parse(`${localStorage.getItem('user')}`);
     const { register, handleSubmit } = useForm({
         defaultValues: {
           username: "",
@@ -20,6 +21,12 @@ const Login = ():JSX.Element => {
         localStorage.setItem('user', JSON.stringify({ ...response }));
         navigate('/chat')
     }
+
+    // useEffect(() => {
+    //     if(storedUserId) {
+    //         navigate('/list');
+    //     }
+    // },[storedUserId])
 
     return (
         <Container>
