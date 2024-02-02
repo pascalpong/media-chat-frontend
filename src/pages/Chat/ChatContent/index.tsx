@@ -25,9 +25,8 @@ const ChatContent = ({ allMessages }: ChatContentProps):JSX.Element => {
     return (
       <>
         <Stack>
-          {JSON.stringify(allMessages)}
           <Box>
-            {allMessages.map((itm:any, index) => {
+            {allMessages && allMessages.map((itm:any, index) => {
               return (
                 <ChatItem
                   animationDelay={index + 2}

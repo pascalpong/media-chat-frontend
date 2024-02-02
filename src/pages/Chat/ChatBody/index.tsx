@@ -16,7 +16,8 @@ interface MessageType {
 const ChatBody = (): JSX.Element => {
   const { roomId } = useParams();
   const [allMessages, setAllMessages] = useState<MessageType[]>([]);
-  const { data:getMessages } = useGetChatMessagesQuery(`${roomId}`); 
+  const { data: getMessages } = useGetChatMessagesQuery(`${roomId}`);
+
   const handleSendMessage = (message: string) => {
     socket.emit('message', { roomId, message });
     setAllMessages((prevMessages) => [
@@ -27,11 +28,25 @@ const ChatBody = (): JSX.Element => {
 
   useEffect(() => {
     socket.emit('join', `${roomId}`);
-  }, [])
+  }, []);
 
   useEffect(() => {
-    setAllMessages(getMessages)
-  },[getMessages])
+    // Listen for incoming messages
+    const handleIncomingMessage = (data: MessageType) => {
+      setAllMessages((prevMessages) => [...prevMessages, data]);
+    };
+
+    socket.on('message', handleIncomingMessage);
+
+    // Clean up the event listener on component unmount
+    return () => {
+      socket.off('message', handleIncomingMessage);
+    };
+  }, [roomId]);
+
+  useEffect(() => {
+    setAllMessages(getMessages);
+  }, [getMessages]);
 
   return (
     <Grid 
@@ -46,7 +61,7 @@ const ChatBody = (): JSX.Element => {
           p={2} 
           width={"100vw"}
         >
-          <ChatHeader />
+          {/* Add your ChatHeader component here */}
         </Box>
       </Grid>
       <Grid item >
