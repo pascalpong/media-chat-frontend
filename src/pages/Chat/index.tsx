@@ -5,10 +5,6 @@ import { socket } from "../../socket";
 
 
 const Chat = ():JSX.Element => {
-    const { roomId } = useParams();
-    useEffect(() => {
-        socket.emit('join', `${roomId}`);
-    },[]);
 
     return (
         <>

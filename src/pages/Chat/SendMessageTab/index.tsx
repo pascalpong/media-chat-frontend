@@ -6,8 +6,11 @@ import { socket } from "../../../socket";
 import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
+interface SendMessageTabProps {
+  onSendMessage: (message: string) => void;
+}
 
-const SendMessageTab = ():JSX.Element => {
+const SendMessageTab = ({ onSendMessage }: SendMessageTabProps):JSX.Element => {
   const { roomId } = useParams();
   const { _id: userId, name, socialMedia } = JSON.parse(`${localStorage.getItem('user')}`);
   const { register, handleSubmit } = useForm({
@@ -15,46 +18,41 @@ const SendMessageTab = ():JSX.Element => {
       message: ""
     }
   });
-  const [ message, setMessage ] = useState('')
-
-  console.log(userId,'userIduserId',roomId,'roomIdroomId')
-
-  useEffect(() => {
-    socket.emit('message', { roomId, message} );
-    socket.on('get-message', (data) => {
-      console.log(data)
-    });
-
-  },[message]);
-
+  const [ message, setMessage ] = useState('');
+  const [ sendMessage ] = useSendMessageMutation();
   const onSubmit = async (values: {message: string}) => {
-    setMessage(message)
+    setMessage(values.message);
+    onSendMessage(values.message);
+    sendMessage({roomId, body: {
+      userId, message: values.message
+    }});
+    socket.emit('message', { roomId, message} );
   }
-
-  
-    
     return (
-        <Box sx={{ width: '100%' }}>
-          <FormControl component={'form'} fullWidth>
-            <Grid container spacing={2}>
-              <Grid item xs={10}>
-                <TextField
-                  size="small"
-                  type="text"
-                  placeholder="Type a message here"
-                  fullWidth
-                  variant="outlined"
-                  color="primary"
-                  {...register('message')}
-                />
-              </Grid>
-              <Grid item xs={2}>
-                <Button onClick={handleSubmit(onSubmit)}>
-                  <SendIcon />
-                </Button>
-              </Grid>
+        <Box 
+          component={'form'} 
+          sx={{ 
+            width: '100%' 
+          }}
+        >
+          <Grid container spacing={2}>
+            <Grid item xs={10}>
+              <TextField
+                size="small"
+                type="text"
+                placeholder="Type a message here"
+                fullWidth
+                variant="outlined"
+                color="primary"
+                {...register('message')}
+              />
             </Grid>
-          </FormControl>
+            <Grid item xs={2}>
+              <Button onClick={handleSubmit(onSubmit)}>
+                <SendIcon />
+              </Button>
+            </Grid>
+          </Grid>
         </Box>
     )
 }

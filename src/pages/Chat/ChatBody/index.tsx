@@ -3,8 +3,36 @@ import ChatContent from "../ChatContent/index";
 import { Box, Grid } from "@mui/material";
 import SendMessageTab from "../SendMessageTab";
 import ChatHeader from "../ChatHeader";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { socket } from "../../../socket";
+import { useGetChatMessagesQuery } from "../../../services/chatRoomService";
 
-const ChatBody = ():JSX.Element => {
+interface MessageType {
+  type: string;
+  message: string;
+}
+
+const ChatBody = (): JSX.Element => {
+  const { roomId } = useParams();
+  const [allMessages, setAllMessages] = useState<MessageType[]>([]);
+  const { data:getMessages } = useGetChatMessagesQuery(`${roomId}`); 
+  const handleSendMessage = (message: string) => {
+    socket.emit('message', { roomId, message });
+    setAllMessages((prevMessages) => [
+      ...prevMessages,
+      { type: "me", message },
+    ]);
+  };
+
+  useEffect(() => {
+    socket.emit('join', `${roomId}`);
+  }, [])
+
+  useEffect(() => {
+    setAllMessages(getMessages)
+  },[getMessages])
+
   return (
     <Grid 
       container 
@@ -23,7 +51,7 @@ const ChatBody = ():JSX.Element => {
       </Grid>
       <Grid item >
         <Box overflow={"auto"} >
-          <ChatContent />
+          <ChatContent allMessages={allMessages} />
         </Box>
       </Grid>
       <Grid item >
@@ -33,7 +61,7 @@ const ChatBody = ():JSX.Element => {
           p={2} 
           width={"100vw"}
         >
-          <SendMessageTab />
+          <SendMessageTab onSendMessage={handleSendMessage} />
         </Box>
       </Grid>
     </Grid>

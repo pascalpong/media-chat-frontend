@@ -6,31 +6,26 @@ import { useGetChatMessagesQuery } from "../../../services/chatRoomService";
 import { Box, Stack } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { socket } from "../../../socket";
 
+interface ChatContentProps {
+  allMessages: Array<{ type: string; message: string }>;
+}
 
-const ChatContent = ():JSX.Element => {
+const ChatContent = ({ allMessages }: ChatContentProps):JSX.Element => {
 
   const { roomId } = useParams();
-  const { data: chatMessages, isLoading, error } = useGetChatMessagesQuery(`${roomId}`);
-  const [allMessages, setAllMessages] = useState([])
 
   useEffect(() => {
-    if(chatMessages) {
-      chatMessages.map((message: any, key: number) => {
-        return {
-          key,
-          type: "other" && "",
-          msg: message.message
-        }
-      })
-      setAllMessages(chatMessages)
-    }
-
-  },[chatMessages])
+    socket.on('get-message', (data) => {
+      console.log(data);
+    });
+  },[]);
 
     return (
       <>
         <Stack>
+          {JSON.stringify(allMessages)}
           <Box>
             {allMessages.map((itm:any, index) => {
               return (

@@ -19,14 +19,16 @@ const Login = ():JSX.Element => {
     const onSubmit = async (values: {username: string, password: string}) => {
         const response = await login(values).unwrap();
         localStorage.setItem('user', JSON.stringify({ ...response }));
-        navigate('/chat')
+        navigate('/list')
     }
 
+    // const storredUser = localStorage.getItem('user');
     // useEffect(() => {
-    //     if(storedUserId) {
+    //     if(!storredUser) {
+    //         console.log(storredUser)
     //         navigate('/list');
     //     }
-    // },[storedUserId])
+    // },[storredUser])
 
     return (
         <Container>
