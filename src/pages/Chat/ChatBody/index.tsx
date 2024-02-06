@@ -11,45 +11,59 @@ import { useGetChatMessagesQuery } from "../../../services/chatRoomService";
 interface MessageType {
   type: string;
   message: string;
+  userId: string;
 }
 
 const ChatBody = (): JSX.Element => {
   const { roomId } = useParams();
+  const storredUser = localStorage.getItem('user');
+  const { _id: userId } = JSON.parse(`${storredUser}`)
   const [allMessages, setAllMessages] = useState<MessageType[]>([]);
   const { data: getMessages } = useGetChatMessagesQuery(`${roomId}`);
 
   const handleSendMessage = (message: string) => {
-    socket.emit('message', { roomId, message });
-    setAllMessages((prevMessages) => [
-      ...prevMessages,
-      { type: "me", message },
-    ]);
+    socket.emit('message', { roomId, message, userId });
   };
 
   useEffect(() => {
     socket.emit('join', `${roomId}`);
+  }, [roomId]);
+  
+  const handleIncomingMessage = (data: MessageType) => {
+    if (data) {
+      setAllMessages((prevMessages) => {
+        const { userId: senderId, message } = data;
+        const addMessage = [...prevMessages, { type: userId === senderId ? '' : 'other', message, userId: senderId }];
+        return addMessage
+      });
+    }
+  };
+
+  useEffect(() => {
+    socket.on('get-message', handleIncomingMessage);
+    return () => {
+      socket.off('get-message', handleIncomingMessage);
+    };
   }, []);
 
   useEffect(() => {
-    // Listen for incoming messages
-    const handleIncomingMessage = (data: MessageType) => {
-      setAllMessages((prevMessages) => [...prevMessages, data]);
-    };
-
-    socket.on('message', handleIncomingMessage);
-
-    // Clean up the event listener on component unmount
-    return () => {
-      socket.off('message', handleIncomingMessage);
-    };
-  }, [roomId]);
-
-  useEffect(() => {
-    setAllMessages(getMessages);
+    if(getMessages) {
+      setAllMessages(arrangeMessage(getMessages));
+    }
   }, [getMessages]);
 
+  const arrangeMessage = (messageSet: MessageType[]) => { 
+    return messageSet.map((data: any) => {
+      return {
+        message: data.message,
+        type: userId === data.userId ? '' : 'other',
+        userId: data.userId
+      }
+    })
+  }
+
   return (
-    <Grid 
+    <Grid
       container 
       direction="row" 
       height="100vh"
@@ -61,7 +75,7 @@ const ChatBody = (): JSX.Element => {
           p={2} 
           width={"100vw"}
         >
-          {/* Add your ChatHeader component here */}
+          <ChatHeader />
         </Box>
       </Grid>
       <Grid item >

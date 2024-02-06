@@ -13,7 +13,7 @@ interface SendMessageTabProps {
 const SendMessageTab = ({ onSendMessage }: SendMessageTabProps):JSX.Element => {
   const { roomId } = useParams();
   const { _id: userId, name, socialMedia } = JSON.parse(`${localStorage.getItem('user')}`);
-  const { register, handleSubmit } = useForm({
+  const { register, handleSubmit, reset } = useForm({
     defaultValues: {
       message: ""
     }
@@ -21,12 +21,17 @@ const SendMessageTab = ({ onSendMessage }: SendMessageTabProps):JSX.Element => {
   const [ message, setMessage ] = useState('');
   const [ sendMessage ] = useSendMessageMutation();
   const onSubmit = async (values: {message: string}) => {
-    setMessage(values.message);
-    onSendMessage(values.message);
-    sendMessage({roomId, body: {
-      userId, message: values.message
-    }});
-    socket.emit('message', { roomId, message} );
+    try {
+      setMessage(values.message);
+      onSendMessage(values.message);
+      await sendMessage({roomId, body: {
+        userId, message: values.message
+      }})
+      socket.emit('message', { roomId, message} );
+      reset();
+    } catch (error) {
+      console.log(error)
+    }
   }
     return (
         <Box 
