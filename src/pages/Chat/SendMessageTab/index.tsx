@@ -23,43 +23,43 @@ const SendMessageTab = ({ onSendMessage }: SendMessageTabProps):JSX.Element => {
   const onSubmit = async (values: {message: string}) => {
     try {
       setMessage(values.message);
-      onSendMessage(values.message);
       await sendMessage({roomId, body: {
         userId, message: values.message
       }})
       socket.emit('message', { roomId, message} );
+      onSendMessage(values.message);
       reset();
     } catch (error) {
       console.log(error)
     }
   }
-    return (
-        <Box 
-          component={'form'} 
-          sx={{ 
-            width: '100%' 
-          }}
-        >
-          <Grid container spacing={2}>
-            <Grid item xs={10}>
-              <TextField
-                size="small"
-                type="text"
-                placeholder="Type a message here"
-                fullWidth
-                variant="outlined"
-                color="primary"
-                {...register('message')}
-              />
-            </Grid>
-            <Grid item xs={2}>
-              <Button onClick={handleSubmit(onSubmit)}>
-                <SendIcon />
-              </Button>
-            </Grid>
+  return (
+      <Box 
+        component={'form'} 
+        sx={{ 
+          width: '100%' 
+        }}
+      >
+        <Grid container spacing={2}>
+          <Grid item xs={10}>
+            <TextField
+              size="small"
+              type="text"
+              placeholder="Type a message here"
+              fullWidth
+              variant="outlined"
+              color="primary"
+              {...register('message')}
+            />
           </Grid>
-        </Box>
-    )
+          <Grid item xs={2}>
+            <Button onClick={handleSubmit(onSubmit)}>
+              <SendIcon />
+            </Button>
+          </Grid>
+        </Grid>
+      </Box>
+  )
 }
 
 export default SendMessageTab
