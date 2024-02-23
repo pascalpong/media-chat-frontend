@@ -52,7 +52,7 @@ const ChatContent = ({ allMessages, loadMoreMessages }: ChatContentProps): JSX.E
         </Box>
       </Stack>
       <div ref={messagesEndRef} />
-      {isLoading && <CircularProgress />}
+      {isLoading && <CircularProgress />} 
     </>
   );
 }

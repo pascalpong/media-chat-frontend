@@ -63,7 +63,7 @@ const ChatBody = (): JSX.Element => {
       LoadMoreMessages();
     }
   }, [isLoading, hasMore]);
-
+  console.log(handleObserver);
   useEffect(() => {
     var options = {
       root: null,
