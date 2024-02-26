@@ -23,6 +23,7 @@ const debounce = (func: (...args: any[]) => void, delay: number) => {
 }
 
 const ChatBody = (): JSX.Element => {
+
   const { roomId } = useParams();
   const storredUser = localStorage.getItem('user');
   const { _id: userId } = JSON.parse(`${storredUser}`)
@@ -42,13 +43,13 @@ const ChatBody = (): JSX.Element => {
     if (!hasMore) {
       return;
     }
-  
     setIsLoading(true);
     setQueryFilters((prev) => {
       return { ...prev, page: prev.page + 1 };
     });
   
-    const newMessages = (await refetch()).data; // Access the 'data' property of 'newMessages'
+    // Pass the updated page parameter to the refetch function
+    const newMessages = (await refetch()).data;
     if (newMessages.length === 0) {
       setHasMore(false);
     } else {
@@ -63,7 +64,7 @@ const ChatBody = (): JSX.Element => {
       LoadMoreMessages();
     }
   }, [isLoading, hasMore]);
-  console.log(handleObserver);
+  
   useEffect(() => {
     var options = {
       root: null,

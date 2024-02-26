@@ -9,6 +9,7 @@ interface ChatContentProps {
 }
 
 const ChatContent = ({ allMessages, loadMoreMessages }: ChatContentProps): JSX.Element => {
+
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const observer = useRef<IntersectionObserver | null>(null);
@@ -17,6 +18,7 @@ const ChatContent = ({ allMessages, loadMoreMessages }: ChatContentProps): JSX.E
     if (messagesEndRef.current) {
       observer.current = new IntersectionObserver(
         async (entries) => {
+          console.log(entries)
           if (entries[0].isIntersecting) {
             setIsLoading(true);
             await loadMoreMessages(); // Call the function to load more messages
@@ -25,7 +27,6 @@ const ChatContent = ({ allMessages, loadMoreMessages }: ChatContentProps): JSX.E
         },
         { threshold: 1 }
       );
-      
       observer.current.observe(messagesEndRef.current);
     }
 
