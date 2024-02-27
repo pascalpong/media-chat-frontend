@@ -7,10 +7,11 @@ export const ChatRoomService = createApi({
   reducerPath: 'ChatRoomService',
   baseQuery: baseQuery,
   endpoints: (builder) => ({
-    getChatMessages: builder.query<any, string>({
-      query: (roomId) => ({
+    getChatMessages: builder.query<any, {roomId: string, page: number}>({
+      query: ({roomId, page}) => ({
         url: `/chat-room/${roomId}/message`,
         method: "GET",
+        params: { page }
       }),
     }),
   }),

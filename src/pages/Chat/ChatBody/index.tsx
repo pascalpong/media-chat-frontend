@@ -4,7 +4,7 @@ import { Box, Grid } from "@mui/material";
 import SendMessageTab from "../SendMessageTab";
 import ChatHeader from "../ChatHeader";
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { socket } from "../../../socket";
 import { useGetChatMessagesQuery } from "../../../services/chatRoomService";
 
@@ -16,10 +16,11 @@ interface MessageType {
 
 const ChatBody = (): JSX.Element => {
   const { roomId } = useParams();
+  const [page, setPage] = useState(1);
   const storredUser = localStorage.getItem('user');
   const { _id: userId } = JSON.parse(`${storredUser}`)
   const [allMessages, setAllMessages] = useState<MessageType[]>([]);
-  const { data: getMessages } = useGetChatMessagesQuery(`${roomId}`);
+  const { data: getMessages } = useGetChatMessagesQuery({ roomId :`${roomId}`, page});
 
   const handleSendMessage = (message: string) => {
     socket.emit('message', { roomId, message, userId });
@@ -38,6 +39,10 @@ const ChatBody = (): JSX.Element => {
       });
     }
   };
+
+  const loadMoreMessages = () => {
+    setPage(prevPage => prevPage + 1);
+  }; 
 
   useEffect(() => {
     socket.on('get-message', handleIncomingMessage);
@@ -80,7 +85,7 @@ const ChatBody = (): JSX.Element => {
       </Grid>
       <Grid item >
         <Box overflow={"auto"} >
-          <ChatContent allMessages={allMessages} />
+          <ChatContent allMessages={allMessages} loadMoreMessages={loadMoreMessages}/>
         </Box>
       </Grid>
       <Grid item >
