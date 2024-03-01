@@ -14,9 +14,16 @@ export const ChatRoomService = createApi({
         params: { page }
       }),
     }),
+    callChatMessages: builder.mutation<any, {roomId: string, page: string}>({
+      query: ({roomId, page}) => ({
+        url: `/chat-room/${roomId}/message`,
+        method: "GET",
+        params: { page }
+      }),
+    }),
   }),
 })
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useGetChatMessagesQuery } = ChatRoomService
+export const { useGetChatMessagesQuery, useCallChatMessagesMutation } = ChatRoomService

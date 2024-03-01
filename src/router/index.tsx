@@ -15,7 +15,7 @@ const Loader = <P extends {}>(
   return LoaderComponent;
 };
 
-const ChatBody = Loader(lazy(() => import("../pages/Chat/ChatBody")));
+const ChatBody = Loader(lazy(() => import("../pages/Chat")));
 const Login = Loader(lazy(() =>  import("../pages/Login")))
 const Register = Loader(lazy(() => import("../pages/Register")))
 const BaseLayout = Loader(lazy(() => import("../components/BaseLayout")))

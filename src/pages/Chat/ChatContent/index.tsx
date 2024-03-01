@@ -1,45 +1,58 @@
 import "./style.css";
 import ChatItem from "./item";
 import { Box, Stack } from "@mui/material";
-import InfiniteScroll from 'react-infinite-scroll-component';
+import CircularProgress from '@mui/material/CircularProgress';
+import InfiniteScroll from 'react-infinite-scroller';
+import { useEffect, useRef, useState } from 'react';
 
 interface ChatContentProps {
   allMessages: Array<{ type: string; message: string }>;
-  loadMoreMessages: () => void;
+  loadMoreMessages: () => void; // Assume loadMoreMessages returns a Promise
+  hasMore: boolean;
 }
 
-const ChatContent = ({ allMessages, loadMoreMessages }: ChatContentProps):JSX.Element => { 
-  
-  const fetchMoreData = () => {
-    loadMoreMessages()
-  };
+const ChatContent = ({ allMessages, loadMoreMessages, hasMore }: ChatContentProps):JSX.Element => {
+  const messagesEndRef = useRef<null | HTMLDivElement>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
+
+  useEffect(scrollToBottom, [allMessages]);
+
+  const loadMore = async () => {
+    if (!isLoading) {
+      setIsLoading(true);
+      await loadMoreMessages();
+      setIsLoading(false);
+    }
+  }
 
   return (
     <>
       <Stack>
-        <Box>
+        <Box style={{ minHeight: '100vh' }}>
           <InfiniteScroll
-            dataLength={allMessages.length}
-            next={fetchMoreData}
-            hasMore={true}
-            loader={<h4>Loading...</h4>}
-            endMessage={
-              <p style={{ textAlign: 'center' }}>
-                <b>Yay! You have seen it all</b>
-              </p>
-            }
+            pageStart={1}
+            loadMore={loadMore}
+            hasMore={hasMore && !isLoading}
+            isReverse={true}
+            threshold={10}
+            loader={<CircularProgress/>}
           >
-          {allMessages && allMessages.map((itm:any, index) => {
+          {allMessages && [...allMessages].reverse().map((itm:any, index) => {
             return (
               <ChatItem
                 animationDelay={index + 2}
                 key={index}
-                user={itm.type ? itm.type : "me"}
+                user={itm.type ? itm.type : "me" }
                 msg={itm.message}
                 image={itm.image}
               />
             );
           })}
+          <div ref={messagesEndRef} />
           </InfiniteScroll>
         </Box>
       </Stack>
