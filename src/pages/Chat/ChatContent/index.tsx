@@ -1,6 +1,4 @@
 import "./style.css";
-import { useState, useEffect, useRef } from 'react';
-import { Box, CircularProgress, Stack } from '@mui/material';
 import ChatItem from "./item";
 import { Box, Stack } from "@mui/material";
 import CircularProgress from '@mui/material/CircularProgress';
@@ -13,77 +11,53 @@ interface ChatContentProps {
   hasMore: boolean; 
 }
 
-<<<<<<< HEAD
-const ChatContent = ({ allMessages }: ChatContentProps):JSX.Element => {  
+const ChatContent = ({ allMessages, loadMoreMessages, hasMore }: ChatContentProps):JSX.Element => {
+  const messagesEndRef = useRef<null | HTMLDivElement>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-    return (
-      <> 
-        <Stack>
-          <Box>
-          {allMessages && allMessages.map((itm:any, index) => {
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
+
+  useEffect(scrollToBottom, [allMessages]);
+
+  const loadMore = async () => {
+    if (!isLoading) {
+      setIsLoading(true);
+      await loadMoreMessages();
+      setIsLoading(false);
+    }
+  }
+
+  return (
+    <>
+      <Stack>
+        <Box style={{ width: '100%' }}>
+          <InfiniteScroll
+            pageStart={1}
+            loadMore={loadMore}
+            hasMore={hasMore && !isLoading}
+            isReverse={true}
+            threshold={10}
+            loader={<CircularProgress/>}
+          >
+          {allMessages && [...allMessages].reverse().map((itm:any, index) => {
             return (
               <ChatItem
                 animationDelay={index + 2}
                 key={index}
-                user={itm.type ? itm.type : "me"}
+                user={itm.type ? itm.type : "me" }
                 msg={itm.message}
                 image={itm.image}
               />
             );
           })}
-          </Box>
-        </Stack>
-      </>
-    );
-=======
-const ChatContent = ({ allMessages, loadMoreMessages }: ChatContentProps): JSX.Element => {
-  const [isLoading, setIsLoading] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement | null>(null);
-  const observer = useRef<IntersectionObserver | null>(null);
-
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      observer.current = new IntersectionObserver(
-        async (entries) => {
-          if (entries[0].isIntersecting) {
-            setIsLoading(true);
-            await loadMoreMessages(); // Call the function to load more messages
-            setIsLoading(false);
-          }
-        },
-        { threshold: 1 }
-      );
-      
-      observer.current.observe(messagesEndRef.current);
-    }
-
-    return () => {
-      if (messagesEndRef.current && observer.current) {
-        observer.current.unobserve(messagesEndRef.current);
-      }
-    };
-  }, []);
-
-  return (
-    <>
-      <Stack>
-        <Box sx={{ flexDirection: 'column-reverse', display: 'flex' }}> {/* Add these styles */}
-          {allMessages && allMessages.map((itm: any, index) => (
-            <ChatItem
-              key={itm.id || index} // Use message id as key, if it exists. Otherwise, use index.
-              animationDelay={index + 2}
-              user={itm.type ? itm.type : 'me'}
-              msg={itm.message}
-              image={itm.image}
-            />
-          ))}
+          <div ref={messagesEndRef} />
+          </InfiniteScroll>
         </Box>
       </Stack>
-      <div ref={messagesEndRef} />
-      {isLoading && <CircularProgress />} 
     </>
   );
->>>>>>> parent of ea30bfa (reversion)
 }
 
 export default ChatContent;
