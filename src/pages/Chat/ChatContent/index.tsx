@@ -16,7 +16,7 @@ interface ChatContentProps {
 const ChatContent = ({ allMessages }: ChatContentProps):JSX.Element => {  
 
     return (
-      <>
+      <> 
         <Stack>
           <Box>
           {allMessages && allMessages.map((itm:any, index) => {
