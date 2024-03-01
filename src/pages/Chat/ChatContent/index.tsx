@@ -10,7 +10,7 @@ import { useEffect, useRef, useState } from 'react';
 interface ChatContentProps {
   allMessages: Array<{ type: string; message: string }>;
   loadMoreMessages: () => void; // Assume loadMoreMessages returns a Promise
-  hasMore: boolean;
+  hasMore: boolean; 
 }
 
 <<<<<<< HEAD
