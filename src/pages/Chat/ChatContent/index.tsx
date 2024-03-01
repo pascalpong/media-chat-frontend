@@ -32,7 +32,7 @@ const ChatContent = ({ allMessages, loadMoreMessages, hasMore }: ChatContentProp
   return (
     <>
       <Stack>
-        <Box style={{ minHeight: '100vh' }}>
+        <Box style={{ width: '100%' }}>
           <InfiniteScroll
             pageStart={1}
             loadMore={loadMore}

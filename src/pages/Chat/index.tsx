@@ -84,11 +84,11 @@ const Chat = (): JSX.Element => {
   }
 
   return (
-    <Box display="flex" flexDirection="column" height="100vh" width={"100vw"}>
+    <Box display="flex" flexDirection="column" height="100vh">
         <Box p={2} flexGrow={1}>
             <ChatHeader />
         </Box>
-        <Box flexGrow={1} >
+        <Box flexGrow={1}>
             <ChatContent allMessages={allMessages} loadMoreMessages={loadMoreMessages} hasMore={hasMore} />
         </Box>
         <Box p={2} flexGrow={1}>
